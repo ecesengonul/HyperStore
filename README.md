@@ -77,6 +77,31 @@ Then open http://localhost:3000.
 > sign in. To skip that while developing, turn off **Confirm email** under
 > *Authentication → Sign In / Providers → Email*.
 
+## Deploying to Vercel
+
+No terminal needed.
+
+1. At [vercel.com/new](https://vercel.com/new), sign in with GitHub and import the
+   `HyperStore` repository.
+2. Leave the build settings alone — Vercel detects Next.js on its own.
+3. Before the first deploy, expand **Environment Variables** and add the same two values that
+   are in `.env.local`:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+   Both are `NEXT_PUBLIC_`, so they are baked in at build time — they must be set *before* the
+   build, not after, or the deploy will come up unconfigured.
+4. **Deploy.**
+
+Two things worth setting once the first deploy is up:
+
+- **Which branch is production.** Vercel treats the repository's default branch as production and
+  every other branch as a preview deployment. If the work you want live is on a feature branch,
+  either merge it into the default branch or change **Settings → Git → Production Branch**.
+- **Supabase Site URL.** In the Supabase dashboard, under *Authentication → URL Configuration*,
+  set **Site URL** to your Vercel domain. It is unused while email confirmation is off, but
+  password-reset and confirmation links need it later.
+
 ## Scripts
 
 | Command | What it does |
