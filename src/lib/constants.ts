@@ -57,6 +57,8 @@ export function formatPrice(amount: number, currency = "TRY") {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
+    // "₺2,800" rather than "TRY 2,800" — the lira sign is what renters expect.
+    currencyDisplay: "narrowSymbol",
     maximumFractionDigits: 0,
   }).format(amount);
 }
