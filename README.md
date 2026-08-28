@@ -27,6 +27,12 @@ view, long-term rental or sale flow, tender/approval process, second-hand sales,
 | Auth | Supabase Auth (email + password) |
 | Photos | Supabase Storage, uploaded straight from the browser |
 
+Two dependencies are pinned through `overrides` in `package.json`: Next 15.5.24 still bundles
+`postcss` 8.4.x and `sharp` 0.34.x, both of which carry advisories that npm otherwise only
+resolves by moving to Next 16. `postcss` 8.x is API-stable and `sharp` is only used for
+`next/image` optimisation, which this app does not use, so forcing the patched versions is safe.
+Run `npm audit` after any dependency change — it should report zero vulnerabilities.
+
 ## Getting it running
 
 ### 1. Create a Supabase project
