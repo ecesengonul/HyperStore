@@ -42,7 +42,7 @@ export default async function HomePage() {
             <li key={category.value}>
               <Link
                 href={`/listings?category=${category.value}`}
-                className="flex h-full items-center gap-3 rounded-xl border border-line p-4 transition hover:-translate-y-0.5 hover:border-sea hover:shadow"
+                className="flex h-full items-center gap-3 rounded-xl border border-line p-4 transition hover:-translate-y-0.5 hover:border-sea hover:shadow active:translate-y-0 active:border-sea active:bg-foam motion-reduce:transform-none"
               >
                 <span aria-hidden className="text-2xl">
                   {category.emoji}

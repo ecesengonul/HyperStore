@@ -38,7 +38,9 @@ export function PhotoGallery({ photos, title }: { photos: string[]; title: strin
                 aria-label={`Show photo ${index + 1} of ${photos.length}`}
                 aria-current={index === active}
                 className={`h-16 w-20 overflow-hidden rounded-lg border transition ${
-                  index === active ? "border-sea ring-2 ring-sea/30" : "border-line hover:border-sea"
+                  index === active
+                    ? "border-sea ring-2 ring-sea/30"
+                    : "border-line transition hover:border-sea active:scale-95 motion-reduce:transform-none"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}

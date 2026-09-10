@@ -18,7 +18,7 @@ export async function signIn(
 ): Promise<AuthFormState> {
   const email = readEmail(formData);
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/listings");
+  const next = String(formData.get("next") ?? "/dashboard");
 
   if (!email || !password) {
     return { error: "Enter your email and password." };
@@ -77,6 +77,30 @@ export async function signUp(
   redirect(role === "owner" ? "/dashboard" : "/listings");
 }
 
+/**
+ * Turn a renter account into an owner one. The header points renters here via
+ * /listings/new; RLS ("users update their own profile") is what actually
+ * limits this to the caller's own row.
+ */
+export async function becomeOwner() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login?next=/listings/new");
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ role: "owner" })
+    .eq("id", user.id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
@@ -86,5 +110,5 @@ export async function signOut() {
 
 /** Only allow same-origin paths, so `?next=` can't bounce users off-site. */
 function safeRedirect(next: string) {
-  return next.startsWith("/") && !next.startsWith("//") ? next : "/listings";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
 }

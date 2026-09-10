@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { becomeOwner } from "@/app/auth/actions";
 import { ListingForm } from "@/components/listing-form";
 import { SetupNotice } from "@/components/setup-notice";
-import { cardClass } from "@/components/ui";
+import { cardClass, primaryButtonClass } from "@/components/ui";
 import { getCurrentUser, isOwner } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/env";
 
@@ -27,15 +27,14 @@ export default async function NewListingPage() {
         <div className={`${cardClass} p-6`}>
           <h1 className="text-lg font-semibold">This is an owner feature</h1>
           <p className="mt-2 text-sm text-ink-soft">
-            Your account is set up for renting. Owner accounts are the ones that publish equipment —
-            create one to list your gear.
+            Your account is set up for renting. Owners are the ones that publish equipment — switch
+            over and your dashboard opens up. You can still rent exactly as before.
           </p>
-          <Link
-            href="/signup?role=owner"
-            className="mt-4 inline-block text-sm font-medium text-sea hover:underline"
-          >
-            Create an owner account
-          </Link>
+          <form action={becomeOwner} className="mt-4">
+            <button type="submit" className={primaryButtonClass}>
+              Switch my account to owner
+            </button>
+          </form>
         </div>
       </div>
     );

@@ -85,30 +85,51 @@ export function LoginForm({ next }: { next: string }) {
   );
 }
 
-export function SignupForm({ defaultRole }: { defaultRole: "renter" | "owner" }) {
+export function SignupForm({
+  defaultRole,
+  lockRole = false,
+}: {
+  defaultRole: "renter" | "owner";
+  /** Came from a link that already picked a side — don't ask again. */
+  lockRole?: boolean;
+}) {
   const [state, formAction] = useActionState(signUp, initialState);
 
   return (
     <form action={formAction} className="space-y-4">
       <Feedback state={state} />
 
-      <fieldset className="space-y-2">
-        <legend className={labelClass}>I want to…</legend>
-        <div className="grid gap-2 sm:grid-cols-2">
-          <RoleOption
-            value="renter"
-            defaultRole={defaultRole}
-            title="Rent"
-            description="Browse and rent sea toys near me."
-          />
-          <RoleOption
-            value="owner"
-            defaultRole={defaultRole}
-            title="List my equipment"
-            description="Put my gear on the marketplace."
-          />
-        </div>
-      </fieldset>
+      {lockRole ? (
+        <>
+          <input type="hidden" name="role" value={defaultRole} />
+          <p className={hintClass}>
+            {defaultRole === "owner"
+              ? "Creating an owner account, so you can list equipment."
+              : "Creating a renter account."}{" "}
+            <Link href="/signup" className="font-medium text-sea hover:underline">
+              Change
+            </Link>
+          </p>
+        </>
+      ) : (
+        <fieldset className="space-y-2">
+          <legend className={labelClass}>I want to…</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <RoleOption
+              value="renter"
+              defaultRole={defaultRole}
+              title="Rent"
+              description="Browse and rent sea toys near me."
+            />
+            <RoleOption
+              value="owner"
+              defaultRole={defaultRole}
+              title="List my equipment"
+              description="Put my gear on the marketplace."
+            />
+          </div>
+        </fieldset>
+      )}
 
       <div>
         <label className={labelClass} htmlFor="full_name">

@@ -10,7 +10,7 @@ export function ListingCard({ listing }: { listing: ListingWithOwner }) {
   return (
     <Link
       href={`/listings/${listing.id}`}
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:-translate-y-0.5 hover:shadow-lg"
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:-translate-y-0.5 hover:border-sea/40 hover:shadow-lg active:translate-y-0 active:shadow motion-reduce:transform-none"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-foam">
         {cover ? (

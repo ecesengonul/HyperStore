@@ -121,7 +121,7 @@ export function PhotoUploader({ userId }: { userId: string }) {
                 type="button"
                 onClick={() => void remove(path)}
                 aria-label={`Remove photo ${index + 1}`}
-                className="absolute -right-2 -top-2 h-6 w-6 rounded-full border border-line bg-white text-sm leading-none text-ink-soft shadow hover:text-ink"
+                className="absolute -right-2 -top-2 h-6 w-6 rounded-full border border-line bg-white text-sm leading-none text-ink-soft shadow transition hover:border-red-300 hover:text-red-700 active:bg-red-50 active:scale-95 motion-reduce:transform-none"
               >
                 ×
               </button>

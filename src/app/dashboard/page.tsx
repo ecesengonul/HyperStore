@@ -84,7 +84,7 @@ export default async function DashboardPage() {
                 <input type="hidden" name="id" value={listing.id} />
                 <button
                   type="submit"
-                  className="rounded-lg border border-line px-3 py-2 text-sm text-ink-soft transition hover:border-red-300 hover:text-red-700"
+                  className="rounded-lg border border-line px-3 py-2 text-sm text-ink-soft transition hover:border-red-300 hover:bg-red-50 hover:text-red-700 active:bg-red-100 active:scale-[0.98] motion-reduce:transform-none"
                 >
                   Delete
                 </button>
