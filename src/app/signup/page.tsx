@@ -16,14 +16,20 @@ export default async function SignupPage({
 
   const { role } = await searchParams;
 
+  // Arriving from a link that already promised a side of the marketplace
+  // ("Become an owner") — take it as settled and drop the Rent/List choice.
+  const requestedRole = role === "owner" || role === "renter" ? role : undefined;
+
   return (
     <div className="mx-auto w-full max-w-md px-4 py-12">
       <h1 className="text-2xl font-semibold tracking-tight">Join HyperStore</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        One account, whichever side of the marketplace you are on.
+        {requestedRole === "owner"
+          ? "Set up an owner account and put your equipment on the marketplace."
+          : "One account, whichever side of the marketplace you are on."}
       </p>
       <div className={`${cardClass} mt-6 p-6`}>
-        <SignupForm defaultRole={role === "owner" ? "owner" : "renter"} />
+        <SignupForm defaultRole={requestedRole ?? "renter"} lockRole={requestedRole !== undefined} />
       </div>
     </div>
   );

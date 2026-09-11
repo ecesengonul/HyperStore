@@ -43,7 +43,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <Link href="/listings" className="text-sm text-ink-soft hover:text-ink">
+      <Link href="/listings" className="text-sm text-ink-soft transition hover:text-ink active:text-sea">
         ← Back to all listings
       </Link>
 

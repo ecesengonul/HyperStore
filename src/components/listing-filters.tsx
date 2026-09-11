@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useState } from "react";
 
 import { inputClass, labelClass, primaryButtonClass } from "@/components/ui";
 import { CATEGORIES } from "@/lib/constants";
@@ -9,8 +9,10 @@ import type { ListingFilters } from "@/lib/listings";
 
 /**
  * A plain GET form, so filters live in the URL and the page stays shareable
- * and server-rendered. Changing a dropdown submits immediately; the Apply
- * button covers the text inputs (and browsers without JS).
+ * and server-rendered. Edits stage in the form and only reach the URL — and
+ * so only refetch — when Apply is pressed, which also keeps this working
+ * without JS. The parent remounts this on every applied change, so the
+ * uncontrolled inputs re-read their defaults from the URL.
  */
 export function ListingFiltersBar({
   filters,
@@ -21,8 +23,7 @@ export function ListingFiltersBar({
   locations: string[];
   resultCount: number;
 }) {
-  const formRef = useRef<HTMLFormElement>(null);
-  const submit = () => formRef.current?.requestSubmit();
+  const [dirty, setDirty] = useState(false);
 
   const isFiltered =
     Boolean(filters.category || filters.location) ||
@@ -31,9 +32,9 @@ export function ListingFiltersBar({
 
   return (
     <form
-      ref={formRef}
       method="get"
       action="/listings"
+      onChange={() => setDirty(true)}
       className="rounded-xl border border-line bg-white p-4"
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -45,7 +46,6 @@ export function ListingFiltersBar({
             id="category"
             name="category"
             defaultValue={filters.category ?? ""}
-            onChange={submit}
             className={inputClass}
           >
             <option value="">All categories</option>
@@ -65,7 +65,6 @@ export function ListingFiltersBar({
             id="location"
             name="location"
             defaultValue={filters.location ?? ""}
-            onChange={submit}
             className={inputClass}
           >
             <option value="">Anywhere in Turkey</option>
@@ -119,7 +118,6 @@ export function ListingFiltersBar({
             id="sort"
             name="sort"
             defaultValue={filters.sort}
-            onChange={submit}
             className={inputClass}
           >
             <option value="newest">Newest first</option>
@@ -133,6 +131,11 @@ export function ListingFiltersBar({
         <button type="submit" className={primaryButtonClass}>
           Apply filters
         </button>
+        {dirty && (
+          <span role="status" className="text-sm text-sea">
+            Unapplied changes
+          </span>
+        )}
         {isFiltered && (
           <Link href="/listings" className="text-sm text-ink-soft hover:text-ink">
             Clear all

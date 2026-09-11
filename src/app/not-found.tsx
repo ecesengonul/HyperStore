@@ -7,7 +7,7 @@ export default function NotFound() {
       <p className="mt-2 text-sm text-ink-soft">
         That page or listing does not exist — it may have been taken down by its owner.
       </p>
-      <Link href="/listings" className="mt-6 inline-block font-medium text-sea hover:underline">
+      <Link href="/listings" className="mt-6 inline-block font-medium text-sea transition hover:underline active:text-sea-deep">
         Browse all listings
       </Link>
     </div>

@@ -5,7 +5,13 @@ import { ListingFiltersBar } from "@/components/listing-filters";
 import { SetupNotice } from "@/components/setup-notice";
 import { getCurrentUser, isOwner } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/env";
-import { fetchListings, fetchLocations, hasActiveFilters, parseFilters } from "@/lib/listings";
+import {
+  fetchListings,
+  fetchLocations,
+  hasActiveFilters,
+  parseFilters,
+  type ListingFilters,
+} from "@/lib/listings";
 
 export const metadata = { title: "Browse listings" };
 
@@ -38,7 +44,14 @@ export default async function ListingsPage({
         </p>
       </header>
 
-      <ListingFiltersBar filters={filters} locations={locations} resultCount={listings.length} />
+      {/* Keyed on the applied filters: a client-side nav (e.g. "Clear all")
+          must remount the bar so its uncontrolled inputs reset to the URL. */}
+      <ListingFiltersBar
+        key={filterKey(filters)}
+        filters={filters}
+        locations={locations}
+        resultCount={listings.length}
+      />
 
       {listings.length === 0 ? (
         <div className="mt-10 rounded-xl border border-dashed border-line px-6 py-16 text-center">
@@ -74,4 +87,15 @@ export default async function ListingsPage({
       )}
     </div>
   );
+}
+
+/** Identity of the currently applied filters, used to reset the filter bar. */
+function filterKey(filters: ListingFilters) {
+  return [
+    filters.category ?? "",
+    filters.location ?? "",
+    filters.minPrice ?? "",
+    filters.maxPrice ?? "",
+    filters.sort,
+  ].join("|");
 }
