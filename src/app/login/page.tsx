@@ -23,7 +23,7 @@ export default async function LoginPage({
         Sign in to manage your listings or pick up where you left off.
       </p>
       <div className={`${cardClass} mt-6 p-6`}>
-        <LoginForm next={next ?? "/dashboard"} />
+        <LoginForm next={next ?? ""} />
       </div>
     </div>
   );

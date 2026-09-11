@@ -18,21 +18,34 @@ export async function signIn(
 ): Promise<AuthFormState> {
   const email = readEmail(formData);
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/dashboard");
+  const next = String(formData.get("next") ?? "");
 
   if (!email || !password) {
     return { error: "Enter your email and password." };
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     return { error: error.message };
   }
 
   revalidatePath("/", "layout");
-  redirect(safeRedirect(next));
+
+  // An explicit ?next= (e.g. from a guarded page) wins. Otherwise land owners
+  // on their dashboard and renters straight in the feed — sending renters via
+  // /dashboard only for it to bounce them to /listings is a wasted round trip.
+  const target = safeRedirect(next);
+  if (target) redirect(target);
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  redirect(homeFor(profile?.role));
 }
 
 export async function signUp(
@@ -74,7 +87,7 @@ export async function signUp(
   }
 
   revalidatePath("/", "layout");
-  redirect(role === "owner" ? "/dashboard" : "/listings");
+  redirect(homeFor(role));
 }
 
 /**
@@ -108,7 +121,16 @@ export async function signOut() {
   redirect("/");
 }
 
-/** Only allow same-origin paths, so `?next=` can't bounce users off-site. */
+/** Where a freshly signed-in user lands when nothing more specific was asked for. */
+function homeFor(role: UserRole | null | undefined) {
+  return role === "owner" ? "/dashboard" : "/listings";
+}
+
+/**
+ * Only allow same-origin paths, so `?next=` can't bounce users off-site.
+ * Returns null when there is no usable target so the caller can fall back
+ * to the role-based home.
+ */
 function safeRedirect(next: string) {
-  return next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+  return next.startsWith("/") && !next.startsWith("//") ? next : null;
 }
